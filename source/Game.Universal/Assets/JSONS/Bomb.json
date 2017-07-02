@@ -1,0 +1,102 @@
+{
+  "sortingLayer": 1.0,
+  "frames": [
+    {
+      "filename": "Bomb_1.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 52,
+        "h": 52
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Bomb_2.png",
+      "frame": {
+        "x": 52,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 52,
+        "h": 52
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Bomb_3.png",
+      "frame": {
+        "x": 104,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 52,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 52,
+        "h": 52
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "BombSpriteSheet.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 156,
+      "h": 52
+    },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:ae2fc28c21922ef85a71bd9716cc1d96:e668ebf817c4ff9581d410f3b56b14f8:ea0706109043639a81bae6c38a91f296$"
+  },
+  "Animations": [
+    {
+      "Name": "Bomb_Idle",
+      "Sprites": [
+        0,
+        1,
+        2
+      ]
+    }
+  ]
+}
