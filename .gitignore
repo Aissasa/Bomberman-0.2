@@ -6,3 +6,4 @@ source/Game.Universal/bin/
 source/Game.Universal/obj/
 source/Library.Windows/bin/
 source/Library.Windows/obj/
+*.opendb

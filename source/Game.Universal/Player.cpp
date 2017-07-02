@@ -217,14 +217,14 @@ namespace DirectXGame
 		{
 			mCurrentAnimation->CurrentSpriteIndex = 0;
 			mAnimationTimer = 0;
-			if (mPreviousMovementState.IsMovingOnX())
+			if (mCurrentMovementState.IsMovingOnX())
 			{
-				mCurrentAnimation = mPreviousMovementState.GoingRight ?
+				mCurrentAnimation = mCurrentMovementState.GoingRight ?
 					mRenderableSpriteSheet.Animations[kWalkingRightAnimationName] : mRenderableSpriteSheet.Animations[kWalkingLeftAnimationName];
 			}
-			if (mPreviousMovementState.IsMovingOnY())
+			if (mCurrentMovementState.IsMovingOnY())
 			{
-				mCurrentAnimation = mPreviousMovementState.GoingUp ?
+				mCurrentAnimation = mCurrentMovementState.GoingUp ?
 					mRenderableSpriteSheet.Animations[kWalkingUpAnimationName] : mRenderableSpriteSheet.Animations[kWalkingDownAnimationName];
 			}
 		}
