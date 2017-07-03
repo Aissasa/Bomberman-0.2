@@ -3,6 +3,7 @@
 #include "Renderable.h"
 #include "KeyboardComponent.h"
 #include <vector>
+#include "CollisionManager.h"
 
 namespace DirectXGame
 {
@@ -90,8 +91,8 @@ namespace DirectXGame
 		void ProcessInput();
 		void UpdateVelocity();
 		void UpdateAnimation(const DX::StepTimer& timer);
-		bool CheckCollisions(const DX::StepTimer& timer);
-		void UpdatePosition(const DX::StepTimer& timer);
+		VelocityRestrictions CheckCollisions(const DX::StepTimer& timer);
+		void UpdatePosition(const DX::StepTimer& timer, const VelocityRestrictions& velocityRestrictions);
 		void HandleIdleStateAnimationUpdate(const DX::StepTimer& timer);
 		void HandleMovingStateAnimationUpdate(const DX::StepTimer& timer);
 		void HandleDyingStateAnimationUpdate(const DX::StepTimer& timer);

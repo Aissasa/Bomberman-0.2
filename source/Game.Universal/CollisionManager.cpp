@@ -27,9 +27,9 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	PlayerCollisionType CollisionManager::PlayerCollisionCheck(const XMFLOAT2& playerPosition, const XMFLOAT2& playerVelocity)
+	PlayerCollisionType CollisionManager::PlayerCollisionCheck(const XMFLOAT2& playerPosition, const XMFLOAT2& playerVelocity, VelocityRestrictions& velocityRestrictions)
 	{
-		if (CharacterCollisionWithMap(playerPosition, playerVelocity))
+		if (CharacterCollisionWithMap(playerPosition, playerVelocity, velocityRestrictions))
 		{
 			return PlayerCollisionType::Map;
 		}
@@ -38,30 +38,67 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	bool CollisionManager::CharacterCollisionWithMap(const DirectX::XMFLOAT2 & characterPosition, const XMFLOAT2& characterVelocity)
+	bool CollisionManager::CharacterCollisionWithMap(const DirectX::XMFLOAT2 & characterPosition, const XMFLOAT2& characterVelocity, VelocityRestrictions& velocityRestrictions)
 	{
 		if (characterVelocity.x == 0 && characterVelocity.y == 0)
 		{
 			return false;
 		}
 
-		XMUINT2 playerTile = Renderable::GetTileFromPosition(characterPosition);
-		vector<BoundingBox> vect = GetSurroundingBlocks(playerTile);
+		XMUINT2 characterTile = Renderable::GetTileFromPosition(characterPosition);
+		vector<BoundingBox> vect = GetSurroundingBlocks(characterTile);
 
 		XMFLOAT2 potentialPosition(characterPosition.x + characterVelocity.x, characterPosition.y + characterVelocity.y);
 		XMFLOAT2 potentialCenter = Renderable::GetCenterPositionOfSprite(potentialPosition);
 		XMFLOAT2 extents = Renderable::GetSpriteExtents();
-		BoundingBox playerBoundingBox({ potentialCenter.x, potentialCenter.y, 0.1f }, { extents.x - sMarginForMapCollision, extents.y - sMarginForMapCollision, 0.1f });
+		BoundingBox characterBoundingBox({ potentialCenter.x, potentialCenter.y, 0.1f }, { extents.x - sMarginForMapCollision, extents.y - sMarginForMapCollision, 0.1f });
+
+		bool collided = false;
+		uint8_t counterOfBlocks = 0;
+
+		float_t minXDistance = 0.f;
+		float_t minYDistance = 0.f;
 
 		for (auto& box : vect)
 		{
-			if (playerBoundingBox.Intersects(box))
+			if (characterBoundingBox.Intersects(box))
 			{
-				return true;
+				++counterOfBlocks;
+				float_t xDistance = potentialCenter.x - box.Center.x;
+				float_t yDistance = potentialCenter.y - box.Center.y;
+				velocityRestrictions.CanMoveOnX |= abs(xDistance) < extents.x;
+				velocityRestrictions.CanMoveOnY |= abs(yDistance) < extents.y;
+
+				minXDistance = abs(minXDistance) < abs(xDistance) ? xDistance : minXDistance;
+				minYDistance = abs(minYDistance) < abs(yDistance) ? yDistance : minYDistance;
+
+				collided = true;
 			}
 		}
 
-		return false;
+		if (!collided)
+		{
+			velocityRestrictions = VelocityRestrictions(true, true);
+		}
+		else
+		{
+			if (!velocityRestrictions.CanMoveOnX && characterVelocity.x != 0.f && abs(minYDistance) > extents.y * 0.8f)
+			{
+				velocityRestrictions.YVel = minYDistance > 0 ? 1.f : -1.f;
+			}
+
+			if (!velocityRestrictions.CanMoveOnY && characterVelocity.y != 0.f && abs(minXDistance) > extents.x * 0.8f)
+			{
+				velocityRestrictions.XVel = minXDistance > 0 ? 1.f : -1.f;
+			}
+
+			if (counterOfBlocks > 1 && velocityRestrictions.CanMoveOnX && velocityRestrictions.CanMoveOnY || counterOfBlocks > 2)
+			{
+				velocityRestrictions = VelocityRestrictions();
+			}
+		}
+
+		return collided;
 	}
 
 	/************************************************************************/

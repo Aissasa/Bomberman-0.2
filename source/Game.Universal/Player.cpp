@@ -64,11 +64,8 @@ namespace DirectXGame
 				ProcessInput();
 				UpdateVelocity();
 				UpdateAnimation(timer);
-				bool collided = CheckCollisions(timer);
-				if (!collided)
-				{
-					UpdatePosition(timer);
-				}
+				VelocityRestrictions velocityRestrictions = CheckCollisions(timer);
+				UpdatePosition(timer, velocityRestrictions);
 				break;
 			}
 
@@ -174,10 +171,11 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	bool Player::CheckCollisions(const DX::StepTimer& timer)
+	VelocityRestrictions Player::CheckCollisions(const DX::StepTimer& timer)
 	{
-		PlayerCollisionType collsionType = CollisionManager::GetInstance().PlayerCollisionCheck(mPosition, 
-		{ static_cast<float_t>(mVelocity.x * timer.GetElapsedSeconds()), static_cast<float_t>(mVelocity.y * timer.GetElapsedSeconds()) });
+		VelocityRestrictions restrictions;
+		XMFLOAT2 frameVelocity(static_cast<float_t>(mVelocity.x * timer.GetElapsedSeconds()), static_cast<float_t>(mVelocity.y * timer.GetElapsedSeconds()));
+		PlayerCollisionType collsionType = CollisionManager::GetInstance().PlayerCollisionCheck(mPosition, frameVelocity, restrictions);
 
 		switch (collsionType)
 		{
@@ -188,7 +186,7 @@ namespace DirectXGame
 
 			case DirectXGame::PlayerCollisionType::Map:
 			{
-				return true;
+				break;
 			}
 
 			case DirectXGame::PlayerCollisionType::BombAE:
@@ -210,14 +208,39 @@ namespace DirectXGame
 			default:
 				break;
 		}
-		return false;
+		return restrictions;
 	}
 
 	/************************************************************************/
-	void Player::UpdatePosition(const StepTimer& timer)
+	void Player::UpdatePosition(const StepTimer& timer, const VelocityRestrictions& velocityRestrictions)
 	{
-		mPosition.x = static_cast<float_t>(mPosition.x + mVelocity.x * timer.GetElapsedSeconds());
-		mPosition.y = static_cast<float_t>(mPosition.y + mVelocity.y * timer.GetElapsedSeconds());
+		bool xUpdated = false;
+		bool yUpdated = false;
+
+		if (velocityRestrictions.CanMoveOnX)
+		{
+			mPosition.x = static_cast<float_t>(mPosition.x + mVelocity.x * timer.GetElapsedSeconds());
+			xUpdated = true;
+		}
+		else
+		{
+			if (mVelocity.y == 0 || mVelocity.y > 0 && velocityRestrictions.YVel > 0 || mVelocity.y < 0 && velocityRestrictions.YVel < 0)
+			{
+				mPosition.y = static_cast<float_t>(mPosition.y + (mBaseSpeed.y + mPerks.Skate * kSpeedIncrement.y) * velocityRestrictions.YVel * timer.GetElapsedSeconds());
+				yUpdated = true;
+			}
+		}
+		if (!yUpdated && velocityRestrictions.CanMoveOnY)
+		{
+			mPosition.y = static_cast<float_t>(mPosition.y + mVelocity.y * timer.GetElapsedSeconds());
+		}
+		else
+		{
+			if (!xUpdated && (mVelocity.x == 0 || mVelocity.x > 0 && velocityRestrictions.XVel > 0 || mVelocity.x < 0 && velocityRestrictions.XVel < 0))
+			{
+				mPosition.x = static_cast<float_t>(mPosition.x + (mBaseSpeed.x + mPerks.Skate * kSpeedIncrement.x) * velocityRestrictions.XVel * timer.GetElapsedSeconds());
+			}
+		}
 	}
 
 	/************************************************************************/

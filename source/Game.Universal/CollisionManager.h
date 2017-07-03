@@ -17,6 +17,20 @@ namespace DirectXGame
 		Door
 	};
 
+	struct VelocityRestrictions
+	{
+		VelocityRestrictions(const bool x = false, const bool y = false, const float_t xVel = 0.f, const float_t yVel = 0.f) :
+			CanMoveOnX(x), CanMoveOnY(y), XVel(xVel), YVel(yVel)
+		{
+		}
+
+		bool CanMoveOnX;
+		bool CanMoveOnY;
+
+		float_t XVel;
+		float_t YVel;
+	};
+
 	class MapRenderable;
 
 	class CollisionManager final
@@ -31,14 +45,14 @@ namespace DirectXGame
 		static CollisionManager& GetInstance();
 
 		void SetMap(const std::shared_ptr<MapRenderable>& map);
-		PlayerCollisionType PlayerCollisionCheck(const DirectX::XMFLOAT2& playerPosition, const DirectX::XMFLOAT2& playerVelocity);
+		PlayerCollisionType PlayerCollisionCheck(const DirectX::XMFLOAT2& playerPosition, const DirectX::XMFLOAT2& playerVelocity, VelocityRestrictions& velocityRestrictions);
 
 	private:
 
 		CollisionManager() = default;
 		~CollisionManager() = default;
 
-		bool CharacterCollisionWithMap(const DirectX::XMFLOAT2& characterPosition, const DirectX::XMFLOAT2& characterVelocity);
+		bool CharacterCollisionWithMap(const DirectX::XMFLOAT2& characterPosition, const DirectX::XMFLOAT2& characterVelocity, VelocityRestrictions& velocityRestrictions);
 		//bool PlayerCollisionWithEnemies(const DirectX::BoundingBox& playerBoundingBox);
 		bool CharacterCollisionWithBombsAE(const DirectX::XMFLOAT2& characterPosition);
 		bool PlayerCollisionWithDoor(const DirectX::XMFLOAT2& playerPosition);
