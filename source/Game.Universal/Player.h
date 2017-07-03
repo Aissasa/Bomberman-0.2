@@ -90,6 +90,7 @@ namespace DirectXGame
 		void ProcessInput();
 		void UpdateVelocity();
 		void UpdateAnimation(const DX::StepTimer& timer);
+		bool CheckCollisions(const DX::StepTimer& timer);
 		void UpdatePosition(const DX::StepTimer& timer);
 		void HandleIdleStateAnimationUpdate(const DX::StepTimer& timer);
 		void HandleMovingStateAnimationUpdate(const DX::StepTimer& timer);
@@ -106,7 +107,7 @@ namespace DirectXGame
 		PlayerMovementState mPreviousMovementState;
 
 		static const DirectX::XMFLOAT2 kBaseSpeed;
-		static const float_t kSpeedIncrement;
+		static const DirectX::XMFLOAT2 kSpeedIncrement;
 		static const float_t kButtonCooldownTime;
 
 		// rendering

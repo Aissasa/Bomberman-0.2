@@ -309,6 +309,7 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <Image Include="Content\Textures\snoods_default.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="MapRenderable.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SpriteSheetParser.h" />
@@ -328,6 +329,7 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <ClInclude Include="Renderable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="MapRenderable.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SpriteSheetParser.cpp" />

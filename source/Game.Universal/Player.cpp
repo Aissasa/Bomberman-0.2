@@ -3,6 +3,7 @@
 #include "MapParser.h"
 #include "LevelGenerator.h"
 #include "SpriteSheetParser.h"
+#include "CollisionManager.h"
 
 using namespace std;
 using namespace DirectX;
@@ -14,8 +15,8 @@ namespace DirectXGame
 #pragma region Static consts
 
 	// movement
-	const XMFLOAT2 Player::kBaseSpeed = {5.f, 6.5f};
-	const float_t Player::kSpeedIncrement = 1.f;
+	const XMFLOAT2 Player::kBaseSpeed = { 6.f, 8.f };
+	const XMFLOAT2 Player::kSpeedIncrement = { 1.5f, 2.f };
 	const float_t Player::kButtonCooldownTime = 0.2f;
 
 	// rendering
@@ -63,8 +64,11 @@ namespace DirectXGame
 				ProcessInput();
 				UpdateVelocity();
 				UpdateAnimation(timer);
-				// todo check collisions here
-				UpdatePosition(timer);
+				bool collided = CheckCollisions(timer);
+				if (!collided)
+				{
+					UpdatePosition(timer);
+				}
 				break;
 			}
 
@@ -100,16 +104,16 @@ namespace DirectXGame
 	/************************************************************************/
 	void Player::ProcessInput()
 	{
-		if (!(mKeyBoard->IsKeyDown(Keys::A) && mKeyBoard->IsKeyDown(Keys::D)))
+		if (!((mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left)) && (mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right))))
 		{
-			mCurrentMovementState.GoingLeft = mKeyBoard->IsKeyDown(Keys::A);
-			mCurrentMovementState.GoingRight = mKeyBoard->IsKeyDown(Keys::D);
+			mCurrentMovementState.GoingLeft = mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left);
+			mCurrentMovementState.GoingRight = mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right);
 		}
 
-		if (!(mKeyBoard->IsKeyDown(Keys::W) && mKeyBoard->IsKeyDown(Keys::S)))
+		if (!((mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up)) && (mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Left))))
 		{
-			mCurrentMovementState.GoingUp = mKeyBoard->IsKeyDown(Keys::W);
-			mCurrentMovementState.GoingDown = mKeyBoard->IsKeyDown(Keys::S);
+			mCurrentMovementState.GoingUp = mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up);
+			mCurrentMovementState.GoingDown = mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down);
 		}
 
 		// todo add z for placing bombs and x for exploding them
@@ -128,13 +132,13 @@ namespace DirectXGame
 			if (mCurrentMovementState.IsMovingOnX())
 			{
 				float_t xMult = mCurrentMovementState.GoingRight ? 1.0f : -1.0f;
-				mVelocity.x = (mBaseSpeed.x + mPerks.Skate * kSpeedIncrement) * xMult;
+				mVelocity.x = (mBaseSpeed.x + mPerks.Skate * kSpeedIncrement.x) * xMult;
 			}
 
 			if (mCurrentMovementState.IsMovingOnY())
 			{
 				float_t yMult = mCurrentMovementState.GoingUp ? 1.0f : -1.0f;
-				mVelocity.y = (mBaseSpeed.y + mPerks.Skate * kSpeedIncrement) * yMult;
+				mVelocity.y = (mBaseSpeed.y + mPerks.Skate * kSpeedIncrement.y) * yMult;
 			}
 			mCurrentPlayerState = PlayerState::Moving;
 		}
@@ -170,14 +174,54 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	void Player::UpdatePosition(const DX::StepTimer& timer)
+	bool Player::CheckCollisions(const DX::StepTimer& timer)
+	{
+		PlayerCollisionType collsionType = CollisionManager::GetInstance().PlayerCollisionCheck(mPosition, 
+		{ static_cast<float_t>(mVelocity.x * timer.GetElapsedSeconds()), static_cast<float_t>(mVelocity.y * timer.GetElapsedSeconds()) });
+
+		switch (collsionType)
+		{
+			case DirectXGame::PlayerCollisionType::None:
+			{
+				break;
+			}
+
+			case DirectXGame::PlayerCollisionType::Map:
+			{
+				return true;
+			}
+
+			case DirectXGame::PlayerCollisionType::BombAE:
+			{
+				break;
+			}
+			case DirectXGame::PlayerCollisionType::Enemy:
+			{
+				break;
+			}
+			case DirectXGame::PlayerCollisionType::Perk:
+			{
+				break;
+			}
+			case DirectXGame::PlayerCollisionType::Door:
+			{
+				break;
+			}
+			default:
+				break;
+		}
+		return false;
+	}
+
+	/************************************************************************/
+	void Player::UpdatePosition(const StepTimer& timer)
 	{
 		mPosition.x = static_cast<float_t>(mPosition.x + mVelocity.x * timer.GetElapsedSeconds());
 		mPosition.y = static_cast<float_t>(mPosition.y + mVelocity.y * timer.GetElapsedSeconds());
 	}
 
 	/************************************************************************/
-	void Player::HandleIdleStateAnimationUpdate(const DX::StepTimer& timer)
+	void Player::HandleIdleStateAnimationUpdate(const StepTimer& timer)
 	{
 		UNREFERENCED_PARAMETER(timer);
 
@@ -200,7 +244,7 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	void Player::HandleMovingStateAnimationUpdate(const DX::StepTimer& timer)
+	void Player::HandleMovingStateAnimationUpdate(const StepTimer& timer)
 	{
 		// same direction
 		if (mCurrentMovementState == mPreviousMovementState)
@@ -233,7 +277,7 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	void Player::HandleDyingStateAnimationUpdate(const DX::StepTimer & timer)
+	void Player::HandleDyingStateAnimationUpdate(const StepTimer & timer)
 	{
 		mAnimationTimer += timer.GetElapsedSeconds();
 

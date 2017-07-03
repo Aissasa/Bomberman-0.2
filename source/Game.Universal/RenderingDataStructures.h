@@ -10,7 +10,7 @@
 namespace DirectXGame
 {
 	// todo consider adding this property to each animation in the JSON files.
-	const std::double_t kAnimationLength = 0.15f;
+	const std::double_t kAnimationLength = 0.125f;
 
 #pragma region Structures
 

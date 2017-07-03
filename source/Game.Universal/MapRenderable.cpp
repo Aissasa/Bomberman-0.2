@@ -3,6 +3,7 @@
 #include "MapParser.h"
 #include "LevelGenerator.h"
 #include "SpriteSheetParser.h"
+#include "CollisionManager.h"
 
 using namespace std;
 using namespace DirectX;
@@ -15,7 +16,7 @@ namespace DirectXGame
 
 	/************************************************************************/
 	MapRenderable::MapRenderable(const shared_ptr<DX::DeviceResources>& deviceResources, const shared_ptr<Camera>& camera,
-								 const string& jsonPath, const wstring & textureMapPath, DirectX::XMFLOAT2 position) :
+								 const string& jsonPath, const wstring & textureMapPath, XMFLOAT2 position) :
 		Renderable(deviceResources, camera, jsonPath, textureMapPath, position), mIsPerkConsumed(false)
 	{
 		InitializeSprites();
@@ -58,8 +59,8 @@ namespace DirectXGame
 			{
 				XMUINT2 currentTile(x, y);
 
-				// render blocks
-				uint32_t currentSpriteIndex = mMap.BlocksLayer[x][y];
+				// render bg tile
+				uint32_t currentSpriteIndex = mMap.BackgroundLayer[x][y];
 				if (currentSpriteIndex > 0)
 				{
 					RenderTile(currentTile, --currentSpriteIndex);
@@ -80,8 +81,8 @@ namespace DirectXGame
 			{
 				XMUINT2 currentTile(x, y);
 
-				// render bg tile
-				uint32_t currentSpriteIndex = mMap.BackgroundLayer[x][y];
+				// render blocks
+				uint32_t currentSpriteIndex = mMap.BlocksLayer[x][y];
 				if (currentSpriteIndex > 0)
 				{
 					RenderTile(currentTile, --currentSpriteIndex);

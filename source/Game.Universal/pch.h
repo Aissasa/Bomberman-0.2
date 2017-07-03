@@ -28,6 +28,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <math.h>
 
 // Library
 #include "ColorHelper.h"

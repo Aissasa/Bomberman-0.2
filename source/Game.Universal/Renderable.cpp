@@ -252,4 +252,23 @@ namespace DirectXGame
 	{
 		return XMFLOAT2(kMapStartPosition.x + kModifier * tile.x * SpriteScale.x, kMapStartPosition.y + kModifier * tile.y * SpriteScale.y);
 	}
+
+	/************************************************************************/
+	XMUINT2 Renderable::GetTileFromPosition(const XMFLOAT2& position)
+	{
+		XMFLOAT2 center = GetCenterPositionOfSprite(position);
+		return XMUINT2(static_cast<uint32_t>(((center.x - kMapStartPosition.x) / (kModifier * SpriteScale.x))), static_cast<uint32_t>(((center.y - kMapStartPosition.y) / (kModifier * SpriteScale.y))));
+	}
+
+	/************************************************************************/
+	XMFLOAT2 Renderable::GetCenterPositionOfSprite(const XMFLOAT2 & position)
+	{
+		return { position.x + (kModifier * SpriteScale.x) / 2,  position.y + (kModifier * SpriteScale.y) / 2 };
+	}
+
+	/************************************************************************/
+	XMFLOAT2 Renderable::GetSpriteExtents()
+	{
+		return { (kModifier * SpriteScale.x) / 2 , (kModifier * SpriteScale.y) / 2 };
+	}
 }

@@ -24,6 +24,11 @@ namespace DirectXGame
 		virtual void Update(const DX::StepTimer& timer) override;
 		virtual void Render(const DX::StepTimer& timer) override;
 
+		static DirectX::XMFLOAT2 GetPositionFromTile(const DirectX::XMUINT2& tile);
+		static DirectX::XMUINT2 GetTileFromPosition(const DirectX::XMFLOAT2& position);
+		static DirectX::XMFLOAT2 GetCenterPositionOfSprite(const DirectX::XMFLOAT2& position);
+		static DirectX::XMFLOAT2 GetSpriteExtents();
+
 		static const DirectX::XMFLOAT2 SpriteScale;
 
 	protected:
@@ -47,7 +52,6 @@ namespace DirectXGame
 		virtual void InitializeSprites() = 0;
 		void InitializeVertices();
 		void Renderable::DrawSprite(const Sprite& sprite, const DX::Transform2D& transform);
-		DirectX::XMFLOAT2 GetPositionFromTile(const DirectX::XMUINT2& tile);
 		DirectX::XMFLOAT4X4 GetTextureTransformFromSprite(const Sprite& sprite);
 
 		std::wstring mTextureMapFilePath;

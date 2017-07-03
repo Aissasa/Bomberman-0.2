@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "MapRenderable.h"
 #include "Player.h"
+#include "CollisionManager.h"
 
 using namespace DX;
 using namespace std;
@@ -40,25 +41,13 @@ namespace DirectXGame
 		auto fpsTextRenderer = make_shared<FpsTextRenderer>(mDeviceResources);
 		mComponents.push_back(fpsTextRenderer);
 
-		//auto fieldManager = make_shared<FieldManager>(mDeviceResources, camera);
-		//mComponents.push_back(fieldManager);
-
-		//auto ballManager = make_shared<BallManager>(mDeviceResources, camera);
-		//ballManager->SetActiveField(fieldManager->ActiveField());
-		//mComponents.push_back(ballManager);		
-
-		//const int32_t spriteRowCount = 12;
-		//const int32_t spriteColumnCount = 15;
-		//auto spriteDemoManager = make_shared<SpriteDemoManager>(mDeviceResources, camera, spriteRowCount, spriteColumnCount);
-		//const XMFLOAT2 center((-spriteColumnCount + 1) * SpriteDemoManager::SpriteScale.x, (-spriteRowCount + 1) * SpriteDemoManager::SpriteScale.y);
-		//spriteDemoManager->SetPositon(center);
-		//mComponents.push_back(spriteDemoManager);
-
 		auto map = make_shared<MapRenderable>(mDeviceResources, camera);
+		mComponents.push_back(map);
+
 		auto player = make_shared<Player>(mDeviceResources, camera, mKeyboard, map->GetMap().PlayerSpawnTile);
+		CollisionManager::GetInstance().SetMap(map);
 
 		mComponents.push_back(player);
-		mComponents.push_back(map);
 
 		mTimer.SetFixedTimeStep(true);
 		mTimer.SetTargetElapsedSeconds(1.0 / 60);
@@ -118,7 +107,7 @@ namespace DirectXGame
 
 		// Reset render targets to the screen.
 		ID3D11RenderTargetView *const targets[1] = { mDeviceResources->GetBackBufferRenderTargetView() };
-		context->OMSetRenderTargets(1, targets, mDeviceResources->GetDepthStencilView());
+		context->OMSetRenderTargets(1, targets, nullptr);
 
 		// Clear the back buffer and depth stencil view.
 		context->ClearRenderTargetView(mDeviceResources->GetBackBufferRenderTargetView(), DirectX::Colors::Black);
