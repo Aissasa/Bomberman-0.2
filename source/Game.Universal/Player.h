@@ -136,6 +136,8 @@ namespace DirectXGame
 		std::shared_ptr<Animation> mCurrentAnimation;
 		std::double_t mAnimationTimer;
 
+		static const double_t kDeathAnimationLength;
+
 		static const std::string kDeathAnimationName;
 		static const std::string kIdleLeftAnimationName;
 		static const std::string kIdleRightAnimationName;

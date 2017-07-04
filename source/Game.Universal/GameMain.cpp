@@ -174,10 +174,15 @@ namespace DirectXGame
 			return;
 		}
 
+		auto player = mComponents.back();
+		mComponents.pop_back();
+
 		for (auto& componentToAdd : mComponentsToAdd)
 		{
 			mComponents.push_back(componentToAdd);
 		}
+
+		mComponents.push_back(player);
 		mComponentsToAdd.clear();
 	}
 

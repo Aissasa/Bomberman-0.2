@@ -22,6 +22,24 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
+	vector<XMUINT2> LevelManager::GetBombsTiles() const
+	{
+		vector<XMUINT2> vect;
+		for (auto& bomb : mBombs)
+		{
+			vect.push_back(Bomb::GetTileFromPosition(bomb->Position()));
+		}
+
+		return move(vect);
+	}
+
+	/************************************************************************/
+	vector<XMUINT2> LevelManager::GetBombsAETiles() const
+	{
+		return mBombsAE;
+	}
+
+	/************************************************************************/
 	void LevelManager::AddBomb(const shared_ptr<Bomb>& bomb)
 	{
 		mBombs.push_back(bomb);

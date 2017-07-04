@@ -2,6 +2,7 @@
 #include "CollisionManager.h"
 #include "Renderable.h"
 #include "MapRenderable.h"
+#include "LevelManager.h"
 
 using namespace std;
 using namespace DirectX;
@@ -9,9 +10,9 @@ using namespace DirectX;
 namespace DirectXGame
 {
 	const float_t CollisionManager::sMarginForMapCollision = 0.25f;    // collision margin with the blocks
-	const float_t CollisionManager::sMarginForBombAECollision = 1.f; // collision margin with the bombAE
-	const float_t CollisionManager::sMarginForPerksCollision = 2.f; // collision margin with the perk
-	const float_t CollisionManager::sMarginForDoorCollision = 4.f; // collision margin with the door
+	const float_t CollisionManager::sMarginForBombAECollision = 0.8f; // collision margin with the bombAE
+	const float_t CollisionManager::sMarginForPerksCollision = 1.6f; // collision margin with the perk
+	const float_t CollisionManager::sMarginForDoorCollision = 3.6f; // collision margin with the door
 
 	/************************************************************************/
 	CollisionManager& CollisionManager::GetInstance()
@@ -29,6 +30,11 @@ namespace DirectXGame
 	/************************************************************************/
 	PlayerCollisionType CollisionManager::PlayerCollisionCheck(const XMFLOAT2& playerPosition, const XMFLOAT2& playerVelocity, VelocityRestrictions& velocityRestrictions)
 	{
+		if (CharacterCollisionWithBombsAE(playerPosition))
+		{
+			return PlayerCollisionType::BombAE;
+		}
+
 		if (CharacterCollisionWithMap(playerPosition, playerVelocity, velocityRestrictions))
 		{
 			return PlayerCollisionType::Map;
@@ -46,12 +52,41 @@ namespace DirectXGame
 		}
 
 		XMUINT2 characterTile = Renderable::GetTileFromPosition(characterPosition);
-		vector<BoundingBox> vect = GetSurroundingBlocks(characterTile);
 
 		XMFLOAT2 potentialPosition(characterPosition.x + characterVelocity.x, characterPosition.y + characterVelocity.y);
 		XMFLOAT2 potentialCenter = Renderable::GetCenterPositionOfSprite(potentialPosition);
 		XMFLOAT2 extents = Renderable::GetSpriteExtents();
 		BoundingBox characterBoundingBox({ potentialCenter.x, potentialCenter.y, 0.1f }, { extents.x - sMarginForMapCollision, extents.y - sMarginForMapCollision, 0.1f });
+
+		// to get away from a bomb they just placed
+		XMUINT2 oppositeTile = characterTile;
+		if (characterVelocity.x > 0)
+			--oppositeTile.x;
+		if (characterVelocity.x < 0)
+			++oppositeTile.x;
+		if (characterVelocity.y > 0)
+			--oppositeTile.y;
+		if (characterVelocity.y < 0)
+			++oppositeTile.y;
+
+		vector<BoundingBox> vect = GetSurroundingBlocks(characterTile);
+		auto vect2 = LevelManager::GetInstance().GetBombsTiles();
+		for (auto& tile : vect2)
+		{
+
+			if (tile.x == oppositeTile.x && tile.y == oppositeTile.y || tile.x == characterTile.x && tile.y == characterTile.y)
+			{
+				continue;
+			}
+
+			XMFLOAT2 position = Renderable::GetPositionFromTile(tile);
+			XMFLOAT2 center = Renderable::GetCenterPositionOfSprite(position);
+			XMFLOAT3 bbCenter(center.x, center.y, 0.1f);
+			XMFLOAT3 bbExtents(extents.x, extents.y, 0.1f);
+			BoundingBox boundingBox(bbCenter, bbExtents);
+
+			vect.push_back(boundingBox);
+		}
 
 		bool collided = false;
 		uint8_t counterOfBlocks = 0;
@@ -104,7 +139,24 @@ namespace DirectXGame
 	/************************************************************************/
 	bool CollisionManager::CharacterCollisionWithBombsAE(const DirectX::XMFLOAT2 & characterPosition)
 	{
-		UNREFERENCED_PARAMETER(characterPosition);
+		XMFLOAT2 center = Renderable::GetCenterPositionOfSprite(characterPosition);
+		XMFLOAT2 extents = Renderable::GetSpriteExtents();
+		BoundingBox characterBoundingBox({ center.x, center.y, 0.1f },
+		{ extents.x - sMarginForBombAECollision, extents.y - sMarginForBombAECollision, 0.1f });
+
+		auto vect = LevelManager::GetInstance().GetBombsAETiles();
+
+		for (auto& ae : vect)
+		{
+			XMFLOAT2 aePosition = Renderable::GetPositionFromTile(ae);
+			XMFLOAT2 aeCenter = Renderable::GetCenterPositionOfSprite(aePosition);
+			BoundingBox aeBoundingBox({ aeCenter.x, aeCenter.y, 0.1f }, { extents.x, extents.y, 0.1f });
+
+			if (characterBoundingBox.Intersects(aeBoundingBox))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 

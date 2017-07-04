@@ -29,6 +29,7 @@ namespace DirectXGame
 	const wstring Player::kTextureMapPath = L"Assets/SpriteSheets/MCSpriteSheet.png";
 
 	// animation
+	const double_t Player::kDeathAnimationLength = 0.3;
 	const string Player::kDeathAnimationName = "Death";
 	const string Player::kIdleLeftAnimationName = "IdleLeft";
 	const string Player::kIdleRightAnimationName = "IdleRight";
@@ -60,7 +61,7 @@ namespace DirectXGame
 	{
 		mPosition = GetPositionFromTile(mMap.PlayerSpawnTile);
 		++mPerks.BombUp;
-		++mPerks.Fire;
+		//++mPerks.Fire;
 		mPerks.Remote = true;
 	}
 
@@ -139,6 +140,7 @@ namespace DirectXGame
 	void Player::InitializeSprites()
 	{
 		mRenderableSpriteSheet = SpriteSheetParser::GetInstance().ParseSpriteSheet(kJSONFilePath);
+		mRenderableSpriteSheet.Animations[kDeathAnimationName]->AnimationLength = 0.3;
 		mCurrentAnimation = mRenderableSpriteSheet.Animations[kIdleRightAnimationName];
 	}
 
@@ -247,6 +249,9 @@ namespace DirectXGame
 
 			case DirectXGame::PlayerCollisionType::BombAE:
 			{
+				mAnimationTimer = 0;
+				mCurrentAnimation = mRenderableSpriteSheet.Animations[kDeathAnimationName];
+				mCurrentPlayerState = PlayerState::Dying;
 				break;
 			}
 			case DirectXGame::PlayerCollisionType::Enemy:
@@ -365,6 +370,7 @@ namespace DirectXGame
 			// last sprite
 			if (mCurrentAnimation->CurrentSpriteIndex == mCurrentAnimation->Sprites.size() - 1)
 			{
+				SetVisible(false);
 				mCurrentPlayerState = PlayerState::Dead;
 				mCurrentAnimation->CurrentSpriteIndex = 0;
 			}
