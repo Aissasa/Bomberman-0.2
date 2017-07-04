@@ -5,7 +5,7 @@ namespace DirectXGame
 	class GameMain;
 	class Bomb;
 
-	/** Singleton that holds information about a level.
+	/** Singleton that holds information about a level and its elements
 	*/
 	class LevelManager final
 	{

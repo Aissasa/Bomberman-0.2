@@ -25,7 +25,7 @@ namespace DirectXGame
 
 		uint32_t Width;
 		uint32_t Height;
-		uint32_t X; 
+		uint32_t X;
 		uint32_t Y;
 		DirectX::XMFLOAT2 UVScalingFactor;
 		float_t SortingLayer;
@@ -84,6 +84,9 @@ namespace DirectXGame
 
 #pragma region Enums
 
+	/** Enumeration representing the sprites indices in a spritesheet object.
+	 *@see SpriteSheet
+	*/
 	enum class SpriteIndicesInSpriteSheet
 	{
 		Door = 2,
@@ -91,6 +94,9 @@ namespace DirectXGame
 		SolidBlock = 16
 	};
 
+	/** Enumeration representing the perks sprites indices in a spritesheet object.
+	 *@see SpriteSheet
+	*/
 	enum class PerksIndicesInSpriteSheet
 	{
 		BombUp = 1,
@@ -101,6 +107,9 @@ namespace DirectXGame
 		Skate = 8
 	};
 
+	/** Enumeration representing the sprites indices in a map object.
+	 *@see Map
+	*/
 	enum class SpriteIndicesInMap
 	{
 		None = 0,
@@ -109,6 +118,9 @@ namespace DirectXGame
 		SolidBlock = static_cast<uint8_t>(SpriteIndicesInSpriteSheet::SolidBlock) + 1
 	};
 
+	/** Enumeration representing the perks sprites indices in a map object.
+	*@see Map
+	*/
 	enum class PerksIndicesInMap
 	{
 		BombUp = static_cast<uint8_t>(PerksIndicesInSpriteSheet::BombUp) + 1,

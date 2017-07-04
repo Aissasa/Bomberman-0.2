@@ -60,9 +60,10 @@ namespace DirectXGame
 		mPreviousMovementState()
 	{
 		mPosition = GetPositionFromTile(mMap.GetMap().PlayerSpawnTile);
-		++mPerks.BombUp;
+		// for debug
+		//++mPerks.BombUp;
 		//++mPerks.Fire;
-		mPerks.Remote = true;
+		//mPerks.Remote = true;
 	}
 
 	/************************************************************************/

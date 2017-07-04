@@ -58,12 +58,6 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="GameMain.cpp" />
-    <ClCompile Include="Ball.cpp" />
-    <ClCompile Include="BallManager.cpp" />
-    <ClCompile Include="FieldManager.cpp" />
-    <ClCompile Include="Field.cpp" />
-    <ClCompile Include="MoodySprite.cpp" />
-    <ClCompile Include="SpriteDemoManager.cpp" />
     <ClCompile Include="MapParser.cpp">
       <Filter>Parsers</Filter>
     </ClCompile>
@@ -99,12 +93,6 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameMain.h" />
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="BallManager.h" />
-    <ClInclude Include="FieldManager.h" />
-    <ClInclude Include="Field.h" />
-    <ClInclude Include="MoodySprite.h" />
-    <ClInclude Include="SpriteDemoManager.h" />
     <ClInclude Include="RenderingDataStructures.h">
       <Filter>Renderables</Filter>
     </ClInclude>
@@ -142,9 +130,6 @@
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
       <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Content\Textures\snoods_default.png">
-      <Filter>Content\Textures</Filter>
     </Image>
     <Image Include="Assets\SpriteSheets\MCSpriteSheet.old.png">
       <Filter>Assets\SpriteSheets</Filter>

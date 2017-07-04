@@ -92,13 +92,19 @@ namespace DirectXGame
 
 				// render bg tile
 				uint32_t currentSpriteIndex = mMap.BackgroundLayer[x][y];
-				if (currentSpriteIndex > 0)
+				if (currentSpriteIndex > 0 && currentSpriteIndex != 5) // todo fix the gray background problem
 				{
 					RenderTile(currentTile, --currentSpriteIndex);
 				}
 			}
 		}
 
+		if (!mIsPerkConsumed)
+		{
+			RenderTile(mMap.PerkTile.Tile, mMap.PerkTile.SpriteIndex);
+		}
+
+		RenderTile(mMap.DoorTile.Tile, mMap.DoorTile.SpriteIndex);
 
 		for (uint32_t y = 0; y < mMap.MapHeight; ++y)
 		{
@@ -114,14 +120,6 @@ namespace DirectXGame
 				}
 			}
 		}
-
-		if (!mIsPerkConsumed)
-		{
-			RenderTile(mMap.PerkTile.Tile, mMap.PerkTile.SpriteIndex);
-		}
-
-		RenderTile(mMap.DoorTile.Tile, mMap.DoorTile.SpriteIndex);
-
 	}
 
 	/************************************************************************/

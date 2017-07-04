@@ -4,6 +4,8 @@
 
 namespace DirectXGame
 {
+	/** Structure representing a renderable fading soft block.
+	*/
 	struct FadingSoftBlock
 	{
 		FadingSoftBlock()

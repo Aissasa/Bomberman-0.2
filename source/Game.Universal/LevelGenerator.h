@@ -4,6 +4,17 @@
 
 namespace DirectXGame
 {
+	enum class RandomPerk
+	{
+		BombUp = 0,
+		Fire,
+		Skate,
+		Remote,
+		PassBomb,
+		PassSoftBlocks,
+		Max
+	};
+
 	/** Singleton that handles generating a level randomly.
 	*/
 	class LevelGenerator final
@@ -29,7 +40,7 @@ namespace DirectXGame
 		void GenerateDoor(Map& map);
 
 		DirectX::XMUINT2 GetRandomTile(const Map& map);
-		uint8_t GetRandomPerk(const Map& map);
+		uint8_t GetRandomPerk();
 		bool IsSameTile(const DirectX::XMUINT2& first, const DirectX::XMUINT2& second);
 
 		static const uint32_t kMinNumberOfSoftBlocks = 80;

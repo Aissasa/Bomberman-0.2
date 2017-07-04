@@ -7,6 +7,8 @@
 namespace DirectXGame
 {
 
+	/** Enum representing the player's collision type.
+	*/
 	enum class PlayerCollisionType
 	{
 		None,
@@ -17,6 +19,9 @@ namespace DirectXGame
 		Door
 	};
 
+	/** Structure that holds information about the character movement restrictions.
+	 * It is used to help characters cut corners.
+	*/
 	struct VelocityRestrictions
 	{
 		VelocityRestrictions(const bool x = false, const bool y = false, const float_t xVel = 0.f, const float_t yVel = 0.f) :
@@ -33,6 +38,10 @@ namespace DirectXGame
 
 	class MapRenderable;
 
+	/** Singleton that handles the collisions in the game.
+	 * This Manager interfaces with the level manager to get the elements in the map.
+	 * @see LevelManager
+	*/
 	class CollisionManager final
 	{
 	public:

@@ -73,6 +73,6 @@ namespace DirectXGame
 		DirectX::XMFLOAT2 mPosition;
 
 		static const DirectX::XMFLOAT2 kMapStartPosition;
-		static const std::float_t kModifier;
+		static const std::float_t kModifier; // i dont know why but i had to use this
 	};
 }

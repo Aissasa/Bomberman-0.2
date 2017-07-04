@@ -76,7 +76,7 @@ namespace DirectXGame
 			{
 				itemAdded = true;
 				map.PerkTile.Tile = randomTile;
-				map.PerkTile.SpriteIndex = GetRandomPerk(map);
+				map.PerkTile.SpriteIndex = GetRandomPerk();
 			}
 		}
 	}
@@ -119,11 +119,33 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	uint8_t LevelGenerator::GetRandomPerk(const Map& map)
+	uint8_t LevelGenerator::GetRandomPerk()
 	{
-		// todo add randomness to perks
-		UNREFERENCED_PARAMETER(map);
-		return static_cast<uint8_t>(PerksIndicesInSpriteSheet::Fire);
+		RandomPerk perk = static_cast<RandomPerk>(MathHelper::GetInstance().GetRangedRandom(static_cast<uint32_t>(RandomPerk::PassSoftBlocks)));
+
+		switch (perk)
+		{
+			case DirectXGame::RandomPerk::BombUp:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::BombUp);
+
+			case DirectXGame::RandomPerk::Fire:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::Fire);
+
+			case DirectXGame::RandomPerk::Skate:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::Skate);
+
+			case DirectXGame::RandomPerk::Remote:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::Remote);
+
+			case DirectXGame::RandomPerk::PassBomb:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::PassBomb);
+
+			case DirectXGame::RandomPerk::PassSoftBlocks:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::PassSoftBlock);
+
+			default:
+				return static_cast<uint8_t>(PerksIndicesInSpriteSheet::Fire);
+		}
 	}
 
 	/************************************************************************/

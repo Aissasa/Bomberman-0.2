@@ -48,11 +48,3 @@
 #include "KeyboardComponent.h"
 #include "MouseComponent.h"
 #include "GamePadComponent.h"
-
-// Local
-#include "Ball.h"
-#include "BallManager.h"
-#include "Field.h"
-#include "FieldManager.h"
-#include "MoodySprite.h"
-#include "SpriteDemoManager.h"

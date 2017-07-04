@@ -287,37 +287,12 @@ namespace DirectXGame
 		{
 			case DirectXGame::BombState::Ticking:
 			{
-				mTickingAnimationTimer += timer.GetElapsedSeconds();
-
-				if (mTickingAnimationTimer > mTickingAnimation->AnimationLength)
-				{
-					mTickingAnimationTimer -= mTickingAnimation->AnimationLength;
-					mTickingAnimation->CurrentSpriteIndex = (mTickingAnimation->CurrentSpriteIndex + 1) % mTickingAnimation->Sprites.size();
-				}
-
+				UpdateTickingAnimation(timer);
 				break;
 			}
 			case DirectXGame::BombState::Exploding:
 			{
-				for (auto& explosionAE : mExplosionAEs)
-				{
-					explosionAE.AnimTimer += timer.GetElapsedSeconds();
-
-					if (explosionAE.AnimTimer > explosionAE.Anim.AnimationLength)
-					{
-						// last sprite
-						if (explosionAE.Anim.CurrentSpriteIndex == explosionAE.Anim.Sprites.size() - 1)
-						{
-							explosionAE.AnimEnded = true;
-							explosionAE.Anim.CurrentSpriteIndex = 0;
-						}
-						else
-						{
-							explosionAE.AnimTimer -= explosionAE.Anim.AnimationLength;
-							++explosionAE.Anim.CurrentSpriteIndex;
-						}
-					}
-				}
+				UpdateExplosionAnimation(timer);
 				break;
 			}
 			case DirectXGame::BombState::Vanished:
@@ -326,6 +301,42 @@ namespace DirectXGame
 			}
 			default:
 				break;
+		}
+	}
+
+	/************************************************************************/
+	void Bomb::UpdateTickingAnimation(const StepTimer& timer)
+	{
+		mTickingAnimationTimer += timer.GetElapsedSeconds();
+
+		if (mTickingAnimationTimer > mTickingAnimation->AnimationLength)
+		{
+			mTickingAnimationTimer -= mTickingAnimation->AnimationLength;
+			mTickingAnimation->CurrentSpriteIndex = (mTickingAnimation->CurrentSpriteIndex + 1) % mTickingAnimation->Sprites.size();
+		}
+	}
+
+	/************************************************************************/
+	void Bomb::UpdateExplosionAnimation(const StepTimer& timer)
+	{
+		for (auto& explosionAE : mExplosionAEs)
+		{
+			explosionAE.AnimTimer += timer.GetElapsedSeconds();
+
+			if (explosionAE.AnimTimer > explosionAE.Anim.AnimationLength)
+			{
+				// last sprite
+				if (explosionAE.Anim.CurrentSpriteIndex == explosionAE.Anim.Sprites.size() - 1)
+				{
+					explosionAE.AnimEnded = true;
+					explosionAE.Anim.CurrentSpriteIndex = 0;
+				}
+				else
+				{
+					explosionAE.AnimTimer -= explosionAE.Anim.AnimationLength;
+					++explosionAE.Anim.CurrentSpriteIndex;
+				}
+			}
 		}
 	}
 
@@ -354,7 +365,6 @@ namespace DirectXGame
 		}
 		else
 		{
-			// todo notify map for fading blocks from here
 			if (map.BlocksLayer[tile.x][tile.y] == static_cast<uint8_t>(SpriteIndicesInMap::SoftBlock))
 			{
 				mPlayer.GetMapRenderable().AddFadingBlock(tile);

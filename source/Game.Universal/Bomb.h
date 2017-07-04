@@ -4,6 +4,9 @@
 
 namespace DirectXGame
 {
+	/** Enumeration representing a bomb states.
+	*@see Bomb
+	*/
 	enum class BombState
 	{
 		Ticking,
@@ -11,6 +14,8 @@ namespace DirectXGame
 		Vanished
 	};
 
+	/** Structure representing a renderable bomb explosion after effect.
+	*/
 	struct ExplosionAE
 	{
 		ExplosionAE()

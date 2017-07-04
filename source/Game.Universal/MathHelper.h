@@ -4,6 +4,8 @@
 
 namespace DirectXGame
 {
+	/** Singleton that provides math helper methods.
+	*/
 	class MathHelper final
 	{
 	public:

@@ -306,7 +306,6 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Image Include="Content\Textures\snoods_default.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bomb.h" />
@@ -316,18 +315,12 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <ClInclude Include="Player.h" />
     <ClInclude Include="SpriteSheetParser.h" />
     <ClInclude Include="App.h" />
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="BallManager.h" />
-    <ClInclude Include="Field.h" />
-    <ClInclude Include="FieldManager.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="LevelGenerator.h" />
     <ClInclude Include="MapParser.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="MoodySprite.h" />
     <ClInclude Include="RenderingDataStructures.h" />
-    <ClInclude Include="SpriteDemoManager.h" />
     <ClInclude Include="Renderable.h" />
   </ItemGroup>
   <ItemGroup>
@@ -338,10 +331,6 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SpriteSheetParser.cpp" />
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="Ball.cpp" />
-    <ClCompile Include="BallManager.cpp" />
-    <ClCompile Include="Field.cpp" />
-    <ClCompile Include="FieldManager.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="LevelGenerator.cpp" />
     <ClCompile Include="MapParser.cpp" />
@@ -354,8 +343,6 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="MoodySprite.cpp" />
-    <ClCompile Include="SpriteDemoManager.cpp" />
     <ClCompile Include="Renderable.cpp" />
   </ItemGroup>
   <ItemGroup>
