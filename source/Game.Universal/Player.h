@@ -110,6 +110,8 @@ namespace DirectXGame
 		void HandleMovingStateAnimationUpdate(const DX::StepTimer& timer);
 		void HandleDyingStateAnimationUpdate(const DX::StepTimer& timer);
 
+		void ApplyPerk();
+
 		void PlaceBomb();
 		void ExplodeBombs();
 

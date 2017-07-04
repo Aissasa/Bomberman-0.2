@@ -36,6 +36,8 @@ namespace DirectXGame
 
 		Map& GetMap();
 		void AddFadingBlock(const DirectX::XMUINT2& tile);
+		void PerkConsumed();
+		bool IsPerkConsumed() const;
 
 	protected:
 

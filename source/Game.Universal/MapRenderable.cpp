@@ -62,6 +62,18 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
+	void MapRenderable::PerkConsumed()
+	{
+		mIsPerkConsumed = true;
+	}
+
+	/************************************************************************/
+	bool MapRenderable::IsPerkConsumed() const
+	{
+		return mIsPerkConsumed;
+	}
+
+	/************************************************************************/
 	void MapRenderable::InitializeSprites()
 	{
 		mRenderableSpriteSheet = SpriteSheetParser::GetInstance().ParseSpriteSheet(mSpriteSheetJSONPath);
@@ -87,12 +99,6 @@ namespace DirectXGame
 			}
 		}
 
-		if (!mIsPerkConsumed)
-		{
-			RenderTile(mMap.PerkTile.Tile, mMap.PerkTile.SpriteIndex);
-		}
-
-		RenderTile(mMap.DoorTile.Tile, mMap.DoorTile.SpriteIndex);
 
 		for (uint32_t y = 0; y < mMap.MapHeight; ++y)
 		{
@@ -108,6 +114,14 @@ namespace DirectXGame
 				}
 			}
 		}
+
+		if (!mIsPerkConsumed)
+		{
+			RenderTile(mMap.PerkTile.Tile, mMap.PerkTile.SpriteIndex);
+		}
+
+		RenderTile(mMap.DoorTile.Tile, mMap.DoorTile.SpriteIndex);
+
 	}
 
 	/************************************************************************/

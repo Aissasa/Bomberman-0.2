@@ -45,7 +45,7 @@ namespace DirectXGame
 
 	/************************************************************************/
 	Player::Player(const shared_ptr<DX::DeviceResources>& deviceResources, const shared_ptr<Camera>& camera,
-				   const shared_ptr<KeyboardComponent>& keyboard, const shared_ptr<GamePadComponent>& gamePad, 
+				   const shared_ptr<KeyboardComponent>& keyboard, const shared_ptr<GamePadComponent>& gamePad,
 				   MapRenderable& map, const string& jsonPath, const wstring& textureMapPath) :
 		Renderable(deviceResources, camera, jsonPath, textureMapPath),
 		mKeyBoard(keyboard),
@@ -153,27 +153,27 @@ namespace DirectXGame
 	/************************************************************************/
 	void Player::ProcessInput()
 	{
-		if (!((mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left) || mGamePad->IsButtonDown(GamePadButtons::DPadLeft)) 
+		if (!((mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left) || mGamePad->IsButtonDown(GamePadButtons::DPadLeft))
 			  && (mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right) || mGamePad->IsButtonDown(GamePadButtons::DPadRight))))
 		{
 			mCurrentMovementState.GoingLeft = mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left) || mGamePad->IsButtonDown(GamePadButtons::DPadLeft);
 			mCurrentMovementState.GoingRight = mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right) || mGamePad->IsButtonDown(GamePadButtons::DPadRight);
 		}
 
-		if (!((mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up) || mGamePad->IsButtonDown(GamePadButtons::DPadUp)) 
+		if (!((mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up) || mGamePad->IsButtonDown(GamePadButtons::DPadUp))
 			  && (mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down) || mGamePad->IsButtonDown(GamePadButtons::DPadDown))))
 		{
 			mCurrentMovementState.GoingUp = mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up) || mGamePad->IsButtonDown(GamePadButtons::DPadUp);
 			mCurrentMovementState.GoingDown = mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down) || mGamePad->IsButtonDown(GamePadButtons::DPadDown);
 		}
 
-		if (mKeyBoard->IsKeyDown(Keys::Z) && !mKeyBoard->IsKeyHeldDown(Keys::Z) 
+		if (mKeyBoard->IsKeyDown(Keys::Z) && !mKeyBoard->IsKeyHeldDown(Keys::Z)
 			|| mGamePad->IsButtonDown(GamePadButtons::A) && !mGamePad->IsButtonHeldDown(GamePadButtons::A))
 		{
 			PlaceBomb();
 		}
 
-		if (mKeyBoard->IsKeyDown(Keys::X) && !mKeyBoard->IsKeyHeldDown(Keys::X) 
+		if (mKeyBoard->IsKeyDown(Keys::X) && !mKeyBoard->IsKeyHeldDown(Keys::X)
 			|| mGamePad->IsButtonDown(GamePadButtons::B) && !mGamePad->IsButtonHeldDown(GamePadButtons::B))
 		{
 			ExplodeBombs();
@@ -266,10 +266,15 @@ namespace DirectXGame
 			}
 			case DirectXGame::PlayerCollisionType::Perk:
 			{
+				ApplyPerk();
 				break;
 			}
 			case DirectXGame::PlayerCollisionType::Door:
 			{
+				if (mMap.IsPerkConsumed())
+				{
+					mCurrentPlayerState = PlayerState::Dead;
+				}
 				break;
 			}
 			default:
@@ -387,7 +392,62 @@ namespace DirectXGame
 			}
 		}
 	}
-	
+
+	/************************************************************************/
+	void Player::ApplyPerk()
+	{
+		if (mMap.IsPerkConsumed())
+		{
+			return;
+		}
+
+		auto perkIndex = static_cast<PerksIndicesInSpriteSheet>(mMap.GetMap().PerkTile.SpriteIndex);
+
+		switch (perkIndex)
+		{
+			case DirectXGame::PerksIndicesInSpriteSheet::BombUp:
+			{
+				++mPerks.BombUp;
+				break;
+			}
+
+			case DirectXGame::PerksIndicesInSpriteSheet::Fire:
+			{
+				++mPerks.Fire;
+				break;
+			}
+
+			case DirectXGame::PerksIndicesInSpriteSheet::PassBomb:
+			{
+				mPerks.PassBomb = true;
+				break;
+			}
+
+			case DirectXGame::PerksIndicesInSpriteSheet::PassSoftBlock:
+			{
+				mPerks.PassSoftBlocks = true;
+				break;
+			}
+
+			case DirectXGame::PerksIndicesInSpriteSheet::Remote:
+			{
+				mPerks.Remote = true;
+				break;
+			}
+
+			case DirectXGame::PerksIndicesInSpriteSheet::Skate:
+			{
+				++mPerks.Skate;
+				break;
+			}
+
+			default:
+				break;
+		}
+
+		mMap.PerkConsumed();
+	}
+
 	/************************************************************************/
 	void Player::PlaceBomb()
 	{

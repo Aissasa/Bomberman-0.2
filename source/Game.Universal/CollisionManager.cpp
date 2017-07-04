@@ -12,7 +12,7 @@ namespace DirectXGame
 	const float_t CollisionManager::sMarginForMapCollision = 0.25f;    // collision margin with the blocks
 	const float_t CollisionManager::sMarginForBombAECollision = 0.8f; // collision margin with the bombAE
 	const float_t CollisionManager::sMarginForPerksCollision = 1.6f; // collision margin with the perk
-	const float_t CollisionManager::sMarginForDoorCollision = 3.6f; // collision margin with the door
+	const float_t CollisionManager::sMarginForDoorCollision = 3.5f; // collision margin with the door
 
 	/************************************************************************/
 	CollisionManager& CollisionManager::GetInstance()
@@ -33,6 +33,20 @@ namespace DirectXGame
 		if (CharacterCollisionWithBombsAE(playerPosition))
 		{
 			return PlayerCollisionType::BombAE;
+		}
+
+		if (PlayerCollisionWithDoor(playerPosition))
+		{
+			velocityRestrictions.CanMoveOnX = true;
+			velocityRestrictions.CanMoveOnY = true;
+			return PlayerCollisionType::Door;
+		}
+
+		if (PlayerCollisionWithPerk(playerPosition))
+		{
+			velocityRestrictions.CanMoveOnX = true;
+			velocityRestrictions.CanMoveOnY = true;
+			return PlayerCollisionType::Perk;
 		}
 
 		if (CharacterCollisionWithMap(playerPosition, playerVelocity, velocityRestrictions))
@@ -157,7 +171,7 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	bool CollisionManager::CharacterCollisionWithBombsAE(const DirectX::XMFLOAT2 & characterPosition)
+	bool CollisionManager::CharacterCollisionWithBombsAE(const XMFLOAT2& characterPosition)
 	{
 		XMFLOAT2 center = Renderable::GetCenterPositionOfSprite(characterPosition);
 		XMFLOAT2 extents = Renderable::GetSpriteExtents();
@@ -181,17 +195,31 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	bool CollisionManager::PlayerCollisionWithDoor(const DirectX::XMFLOAT2 & playerPosition)
+	bool CollisionManager::PlayerCollisionWithDoor(const XMFLOAT2& playerPosition)
 	{
-		UNREFERENCED_PARAMETER(playerPosition);
-		return false;
+		XMFLOAT2 playerCenter = Renderable::GetCenterPositionOfSprite(playerPosition);
+		XMFLOAT2 extents = Renderable::GetSpriteExtents();
+		BoundingBox playerBoundingBox({ playerCenter.x, playerCenter.y, 0.1f },
+		{ extents.x - sMarginForDoorCollision, extents.y - sMarginForDoorCollision, 0.1f });
+
+		XMFLOAT2 doorCenter = Renderable::GetCenterPositionOfSprite(Renderable::GetPositionFromTile(mMap.lock()->GetMap().DoorTile.Tile));
+		BoundingBox doorBoundingBox({ doorCenter.x, doorCenter.y, 0.1f }, { extents.x, extents.y, 0.1f });
+
+		return playerBoundingBox.Intersects(doorBoundingBox);
 	}
 
 	/************************************************************************/
-	bool CollisionManager::PlayerCollisionWithPerk(const DirectX::XMFLOAT2 & playerPosition)
+	bool CollisionManager::PlayerCollisionWithPerk(const XMFLOAT2& playerPosition)
 	{
-		UNREFERENCED_PARAMETER(playerPosition);
-		return false;
+		XMFLOAT2 playerCenter = Renderable::GetCenterPositionOfSprite(playerPosition);
+		XMFLOAT2 extents = Renderable::GetSpriteExtents();
+		BoundingBox playerBoundingBox({ playerCenter.x, playerCenter.y, 0.1f },
+		{ extents.x - sMarginForPerksCollision, extents.y - sMarginForPerksCollision, 0.1f });
+
+		XMFLOAT2 perkCenter = Renderable::GetCenterPositionOfSprite(Renderable::GetPositionFromTile(mMap.lock()->GetMap().PerkTile.Tile));
+		BoundingBox perkBoundingBox({ perkCenter.x, perkCenter.y, 0.1f }, { extents.x, extents.y, 0.1f });
+
+		return playerBoundingBox.Intersects(perkBoundingBox);
 	}
 
 	/************************************************************************/
