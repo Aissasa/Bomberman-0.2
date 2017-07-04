@@ -4,6 +4,23 @@
 
 namespace DirectXGame
 {
+	struct FadingSoftBlock
+	{
+		FadingSoftBlock()
+		{
+		}
+
+		FadingSoftBlock(const std::shared_ptr<Animation>& anim, const DirectX::XMFLOAT2 position) :
+			Anim(*anim), Position(position), AnimTimer(0), AnimEnded(false)
+		{
+		}
+
+		Animation Anim;
+		DirectX::XMFLOAT2 Position;
+		double_t AnimTimer;
+		bool AnimEnded;
+	};
+
 	/** Class handling a renderable map.
 	*/
 	class MapRenderable final : public Renderable
@@ -17,7 +34,8 @@ namespace DirectXGame
 		virtual void Update(const DX::StepTimer& timer) override;
 		virtual void Render(const DX::StepTimer& timer) override;
 
-		const Map& GetMap() const;
+		Map& GetMap();
+		void AddFadingBlock(const DirectX::XMUINT2& tile);
 
 	protected:
 
@@ -27,11 +45,19 @@ namespace DirectXGame
 
 		void RenderBasicMap();
 		void RenderTile(const DirectX::XMUINT2& tile, const std::uint32_t spriteIndex);
+		void RenderFadingSoftBlocks();
+
+		void UpdateAnimations(const DX::StepTimer& timer);
 
 		Map mMap;
 		bool mIsPerkConsumed;
 
+		std::vector<FadingSoftBlock> mFadingBlocks;
+
 		static const std::string kJSONFilePath;
 		static const std::wstring kTextureMapPath;
+
+		static const std::string kSoftBlockFadingAnimationName;
+		static const double_t kSoftBlockFadingAnimationLength;
 	};
 }

@@ -48,7 +48,7 @@ namespace DirectXGame
 		auto map = make_shared<MapRenderable>(mDeviceResources, camera);
 		mComponents.push_back(map);
 
-		auto player = make_shared<Player>(mDeviceResources, camera, mKeyboard, mGamePad, map->GetMap());
+		auto player = make_shared<Player>(mDeviceResources, camera, mKeyboard, mGamePad, *map);
 		CollisionManager::GetInstance().SetMap(map);
 
 		mComponents.push_back(player);

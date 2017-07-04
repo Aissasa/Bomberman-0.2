@@ -13,6 +13,8 @@ namespace DirectXGame
 {
 	const string MapRenderable::kJSONFilePath = "Assets/JSONS/Props.json";
 	const wstring MapRenderable::kTextureMapPath = L"Assets/SpriteSheets/PropsSpriteSheet.png";
+	const string MapRenderable::kSoftBlockFadingAnimationName = "SoftBlockFading";
+	const double_t MapRenderable::kSoftBlockFadingAnimationLength = 0.1;
 
 	/************************************************************************/
 	MapRenderable::MapRenderable(const shared_ptr<DX::DeviceResources>& deviceResources, const shared_ptr<Camera>& camera,
@@ -26,6 +28,8 @@ namespace DirectXGame
 	void MapRenderable::Update(const StepTimer& timer)
 	{
 		Renderable::Update(timer);
+
+		UpdateAnimations(timer);
 	}
 
 	/************************************************************************/
@@ -39,18 +43,29 @@ namespace DirectXGame
 
 		Renderable::Render(timer);
 		RenderBasicMap();
+		RenderFadingSoftBlocks();
 	}
 
 	/************************************************************************/
-	const Map& MapRenderable::GetMap() const
+	Map& MapRenderable::GetMap()
 	{
 		return mMap;
+	}
+
+	/************************************************************************/
+	void MapRenderable::AddFadingBlock(const DirectX::XMUINT2& tile)
+	{
+		mMap.BlocksLayer[tile.x][tile.y] = static_cast<uint8_t>(SpriteIndicesInMap::None);
+
+		FadingSoftBlock fadingSoftBlock(mRenderableSpriteSheet.Animations[kSoftBlockFadingAnimationName], GetPositionFromTile(tile));
+		mFadingBlocks.push_back(fadingSoftBlock);
 	}
 
 	/************************************************************************/
 	void MapRenderable::InitializeSprites()
 	{
 		mRenderableSpriteSheet = SpriteSheetParser::GetInstance().ParseSpriteSheet(mSpriteSheetJSONPath);
+		mRenderableSpriteSheet.Animations[kSoftBlockFadingAnimationName]->AnimationLength = kSoftBlockFadingAnimationLength;
 		mMap = LevelGenerator::GetInstance().GenerateLevel();
 	}
 
@@ -103,5 +118,62 @@ namespace DirectXGame
 		Transform2D transform(tilePosition, 0, SpriteScale);
 
 		DrawSprite(*sprite, transform);
+	}
+
+	/************************************************************************/
+	void MapRenderable::RenderFadingSoftBlocks()
+	{
+		for (auto& block : mFadingBlocks)
+		{
+			auto sprite = block.Anim.Sprites[block.Anim.CurrentSpriteIndex];
+			Transform2D transform(block.Position , 0, SpriteScale);
+
+			DrawSprite(*sprite, transform);
+		}
+	}
+
+	/************************************************************************/
+	void MapRenderable::UpdateAnimations(const DX::StepTimer & timer)
+	{
+		if (mFadingBlocks.size() == 0)
+		{
+			return;
+		}
+
+		for (auto& block : mFadingBlocks)
+		{
+			block.AnimTimer += timer.GetElapsedSeconds();
+
+			if (block.AnimTimer > block.Anim.AnimationLength)
+			{
+				// last sprite
+				if (block.Anim.CurrentSpriteIndex == block.Anim.Sprites.size() - 1)
+				{
+					block.AnimEnded = true;
+					block.Anim.CurrentSpriteIndex = 0;
+				}
+				else
+				{
+					block.AnimTimer -= block.Anim.AnimationLength;
+					++block.Anim.CurrentSpriteIndex;
+				}
+			}
+		}
+
+		bool done = false;
+
+		while (!done)
+		{
+			done = true;
+			for (auto it = mFadingBlocks.begin(); it != mFadingBlocks.end(); ++it)
+			{
+				if ((*it).AnimEnded)
+				{
+					mFadingBlocks.erase(it);
+					done = false;
+					break;
+				}
+			}
+		}
 	}
 }

@@ -75,6 +75,7 @@ namespace DirectXGame
 	};
 
 	class Bomb;
+	class MapRenderable;
 
 	/** Class representing an animated renderable player.
 	*/
@@ -83,7 +84,7 @@ namespace DirectXGame
 	public:
 
 		Player(const std::shared_ptr<DX::DeviceResources>& deviceResources, const std::shared_ptr<DX::Camera>& camera, const std::shared_ptr<DX::KeyboardComponent>& keyboard, 
-			   const std::shared_ptr<DX::GamePadComponent>& gamePad, const Map& map, const std::string& jsonPath = kJSONFilePath, 
+			   const std::shared_ptr<DX::GamePadComponent>& gamePad, MapRenderable& map, const std::string& jsonPath = kJSONFilePath, 
 			   const std::wstring& textureMapPath = kTextureMapPath);
 		
 		virtual void Update(const DX::StepTimer& timer) override;
@@ -91,7 +92,8 @@ namespace DirectXGame
 
 		const Perks& GetPerks() const;
 		bool RemoveBomb(const Bomb& bomb);
-		const Map& GetMap() const;
+		Map& GetMap();
+		MapRenderable& GetMapRenderable();
 
 	protected:
 
@@ -114,7 +116,7 @@ namespace DirectXGame
 		Perks mPerks;
 		std::shared_ptr<DX::KeyboardComponent> mKeyBoard;
 		std::shared_ptr<DX::GamePadComponent> mGamePad;
-		const Map& mMap;
+		MapRenderable& mMap;
 		std::vector<std::shared_ptr<Bomb>> mBombs;
 		PlayerState mCurrentPlayerState;
 

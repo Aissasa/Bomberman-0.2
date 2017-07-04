@@ -8,7 +8,7 @@
 #include "GamePadComponent.h"
 #include "Bomb.h"
 #include "LevelManager.h"
-
+#include "MapRenderable.h"
 
 using namespace std;
 using namespace DirectX;
@@ -46,7 +46,7 @@ namespace DirectXGame
 	/************************************************************************/
 	Player::Player(const shared_ptr<DX::DeviceResources>& deviceResources, const shared_ptr<Camera>& camera,
 				   const shared_ptr<KeyboardComponent>& keyboard, const shared_ptr<GamePadComponent>& gamePad, 
-				   const Map& map, const string& jsonPath, const wstring& textureMapPath) :
+				   MapRenderable& map, const string& jsonPath, const wstring& textureMapPath) :
 		Renderable(deviceResources, camera, jsonPath, textureMapPath),
 		mKeyBoard(keyboard),
 		mGamePad(gamePad),
@@ -59,7 +59,7 @@ namespace DirectXGame
 		mCurrentMovementState(),
 		mPreviousMovementState()
 	{
-		mPosition = GetPositionFromTile(mMap.PlayerSpawnTile);
+		mPosition = GetPositionFromTile(mMap.GetMap().PlayerSpawnTile);
 		++mPerks.BombUp;
 		//++mPerks.Fire;
 		mPerks.Remote = true;
@@ -131,7 +131,13 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	const Map& Player::GetMap() const
+	Map& Player::GetMap()
+	{
+		return mMap.GetMap();
+	}
+
+	/************************************************************************/
+	MapRenderable& Player::GetMapRenderable()
 	{
 		return mMap;
 	}

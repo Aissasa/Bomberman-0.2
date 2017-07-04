@@ -59,22 +59,42 @@ namespace DirectXGame
 		BoundingBox characterBoundingBox({ potentialCenter.x, potentialCenter.y, 0.1f }, { extents.x - sMarginForMapCollision, extents.y - sMarginForMapCollision, 0.1f });
 
 		// to get away from a bomb they just placed
-		XMUINT2 oppositeTile = characterTile;
+		XMUINT2 oppositeTile1 = characterTile;
+		XMUINT2 oppositeTile2 = characterTile;
+		XMUINT2 oppositeTile3 = characterTile;
 		if (characterVelocity.x > 0)
-			--oppositeTile.x;
+		{
+			--oppositeTile1.x;
+			--oppositeTile2.y;
+			++oppositeTile3.y;
+		}
 		if (characterVelocity.x < 0)
-			++oppositeTile.x;
+		{
+			++oppositeTile1.x;
+			--oppositeTile2.y;
+			++oppositeTile3.y;
+		}
 		if (characterVelocity.y > 0)
-			--oppositeTile.y;
+		{
+			--oppositeTile1.y;
+			--oppositeTile2.x;
+			++oppositeTile3.x;
+		}
 		if (characterVelocity.y < 0)
-			++oppositeTile.y;
+		{
+			++oppositeTile1.y;
+			--oppositeTile2.x;
+			++oppositeTile3.x;
+		}
 
 		vector<BoundingBox> vect = GetSurroundingBlocks(characterTile);
 		auto vect2 = LevelManager::GetInstance().GetBombsTiles();
 		for (auto& tile : vect2)
 		{
-
-			if (tile.x == oppositeTile.x && tile.y == oppositeTile.y || tile.x == characterTile.x && tile.y == characterTile.y)
+			if (tile.x == oppositeTile1.x && tile.y == oppositeTile1.y || 
+				tile.x == oppositeTile2.x && tile.y == oppositeTile2.y ||
+				tile.x == oppositeTile3.x && tile.y == oppositeTile3.y ||
+				tile.x == characterTile.x && tile.y == characterTile.y)
 			{
 				continue;
 			}

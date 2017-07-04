@@ -457,13 +457,13 @@
   },
   "Animations": [
     {
-      "Name": "Soft_Block_Idle",
+      "Name": "SoftBlockIdle",
       "Sprites": [
         16
       ]
     },
     {
-      "Name": "Soft_Block_Fading",
+      "Name": "SoftBlockFading",
       "Sprites": [
         10,
         11,

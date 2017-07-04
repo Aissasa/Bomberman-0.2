@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "SpriteSheetParser.h"
 #include "LevelManager.h"
+#include "MapRenderable.h"
 
 using namespace std;
 using namespace DX;
@@ -143,7 +144,6 @@ namespace DirectXGame
 	/************************************************************************/
 	void Bomb::Explode()
 	{
-		//todo add ae to level manager
 		uint32_t range = mPlayer.GetPerks().Fire;
 
 		XMUINT2 centerTile = GetTileFromPosition(mPosition);
@@ -355,6 +355,10 @@ namespace DirectXGame
 		else
 		{
 			// todo notify map for fading blocks from here
+			if (map.BlocksLayer[tile.x][tile.y] == static_cast<uint8_t>(SpriteIndicesInMap::SoftBlock))
+			{
+				mPlayer.GetMapRenderable().AddFadingBlock(tile);
+			}
 			return false;
 		}
 	}
