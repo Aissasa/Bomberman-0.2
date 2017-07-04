@@ -138,8 +138,8 @@ namespace DirectXGame
 
 				XMUINT2 currentTile(x, y);
 
-				if (mMap.lock()->GetMap().BlocksLayer[x][y] == static_cast<uint32_t>(SpriteIndicesInMap::SoftBlock) ||
-					mMap.lock()->GetMap().BlocksLayer[x][y] == static_cast<uint32_t>(SpriteIndicesInMap::SolidBlock))
+				if (mMap.lock()->GetMap().BlocksLayer[x][y] == static_cast<uint8_t>(SpriteIndicesInMap::SoftBlock) ||
+					mMap.lock()->GetMap().BlocksLayer[x][y] == static_cast<uint8_t>(SpriteIndicesInMap::SolidBlock))
 				{
 					XMFLOAT2 position = Renderable::GetPositionFromTile(currentTile);
 					XMFLOAT2 center = Renderable::GetCenterPositionOfSprite(position);

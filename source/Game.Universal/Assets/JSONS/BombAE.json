@@ -716,7 +716,7 @@
   },
   "Animations": [
     {
-      "Name": "Bomb_AE_Bottom",
+      "Name": "BombAEBottom",
       "Sprites": [
         2,
         1,
@@ -728,7 +728,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Center",
+      "Name": "BombAECenter",
       "Sprites": [
         6,
         5,
@@ -740,7 +740,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Horiz",
+      "Name": "BombAEHoriz",
       "Sprites": [
         10,
         9,
@@ -752,7 +752,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Left",
+      "Name": "BombAELeft",
       "Sprites": [
         14,
         13,
@@ -764,7 +764,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Right",
+      "Name": "BombAERight",
       "Sprites": [
         18,
         17,
@@ -776,7 +776,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Top",
+      "Name": "BombAETop",
       "Sprites": [
         22,
         21,
@@ -788,7 +788,7 @@
       ]
     },
     {
-      "Name": "Bomb_AE_Vert",
+      "Name": "BombAEVert",
       "Sprites": [
         26,
         25,

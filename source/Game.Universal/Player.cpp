@@ -4,6 +4,11 @@
 #include "LevelGenerator.h"
 #include "SpriteSheetParser.h"
 #include "CollisionManager.h"
+#include "KeyboardComponent.h"
+#include "GamePadComponent.h"
+#include "Bomb.h"
+#include "LevelManager.h"
+
 
 using namespace std;
 using namespace DirectX;
@@ -39,9 +44,12 @@ namespace DirectXGame
 
 	/************************************************************************/
 	Player::Player(const shared_ptr<DX::DeviceResources>& deviceResources, const shared_ptr<Camera>& camera,
-				   const shared_ptr<KeyboardComponent>& keyboard, XMUINT2& startTile, const string& jsonPath, const wstring& textureMapPath) :
+				   const shared_ptr<KeyboardComponent>& keyboard, const shared_ptr<GamePadComponent>& gamePad, 
+				   const Map& map, const string& jsonPath, const wstring& textureMapPath) :
 		Renderable(deviceResources, camera, jsonPath, textureMapPath),
 		mKeyBoard(keyboard),
+		mGamePad(gamePad),
+		mMap(map),
 		mCurrentPlayerState(PlayerState::Idle),
 		mCurrentAnimation(nullptr),
 		mAnimationTimer(0),
@@ -50,7 +58,10 @@ namespace DirectXGame
 		mCurrentMovementState(),
 		mPreviousMovementState()
 	{
-		mPosition = GetPositionFromTile(startTile);
+		mPosition = GetPositionFromTile(mMap.PlayerSpawnTile);
+		++mPerks.BombUp;
+		++mPerks.Fire;
+		mPerks.Remote = true;
 	}
 
 	/************************************************************************/
@@ -84,11 +95,44 @@ namespace DirectXGame
 	/************************************************************************/
 	void Player::Render(const DX::StepTimer & timer)
 	{
+		// Loading is asynchronous. Only draw geometry after it's loaded.
+		if (!mLoadingComplete)
+		{
+			return;
+		}
+
 		Renderable::Render(timer);
 		auto sprite = mCurrentAnimation->Sprites[mCurrentAnimation->CurrentSpriteIndex];
 		Transform2D transform(mPosition, 0, SpriteScale);
 
 		DrawSprite(*sprite, transform);
+	}
+
+	/************************************************************************/
+	const Perks& Player::GetPerks() const
+	{
+		return mPerks;
+	}
+
+	/************************************************************************/
+	bool Player::RemoveBomb(const Bomb& bomb)
+	{
+		for (auto it = mBombs.begin(); it != mBombs.end(); ++it)
+		{
+			if ((*it).get() == &bomb)
+			{
+				//LevelManager::GetInstance().RemoveBomb(*it);
+				mBombs.erase(it);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/************************************************************************/
+	const Map& Player::GetMap() const
+	{
+		return mMap;
 	}
 
 	/************************************************************************/
@@ -101,19 +145,31 @@ namespace DirectXGame
 	/************************************************************************/
 	void Player::ProcessInput()
 	{
-		if (!((mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left)) && (mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right))))
+		if (!((mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left) || mGamePad->IsButtonDown(GamePadButtons::DPadLeft)) 
+			  && (mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right) || mGamePad->IsButtonDown(GamePadButtons::DPadRight))))
 		{
-			mCurrentMovementState.GoingLeft = mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left);
-			mCurrentMovementState.GoingRight = mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right);
+			mCurrentMovementState.GoingLeft = mKeyBoard->IsKeyDown(Keys::A) || mKeyBoard->IsKeyDown(Keys::Left) || mGamePad->IsButtonDown(GamePadButtons::DPadLeft);
+			mCurrentMovementState.GoingRight = mKeyBoard->IsKeyDown(Keys::D) || mKeyBoard->IsKeyDown(Keys::Right) || mGamePad->IsButtonDown(GamePadButtons::DPadRight);
 		}
 
-		if (!((mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up)) && (mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Left))))
+		if (!((mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up) || mGamePad->IsButtonDown(GamePadButtons::DPadUp)) 
+			  && (mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down) || mGamePad->IsButtonDown(GamePadButtons::DPadDown))))
 		{
-			mCurrentMovementState.GoingUp = mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up);
-			mCurrentMovementState.GoingDown = mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down);
+			mCurrentMovementState.GoingUp = mKeyBoard->IsKeyDown(Keys::W) || mKeyBoard->IsKeyDown(Keys::Up) || mGamePad->IsButtonDown(GamePadButtons::DPadUp);
+			mCurrentMovementState.GoingDown = mKeyBoard->IsKeyDown(Keys::S) || mKeyBoard->IsKeyDown(Keys::Down) || mGamePad->IsButtonDown(GamePadButtons::DPadDown);
 		}
 
-		// todo add z for placing bombs and x for exploding them
+		if (mKeyBoard->IsKeyDown(Keys::Z) && !mKeyBoard->IsKeyHeldDown(Keys::Z) 
+			|| mGamePad->IsButtonDown(GamePadButtons::A) && !mGamePad->IsButtonHeldDown(GamePadButtons::A))
+		{
+			PlaceBomb();
+		}
+
+		if (mKeyBoard->IsKeyDown(Keys::X) && !mKeyBoard->IsKeyHeldDown(Keys::X) 
+			|| mGamePad->IsButtonDown(GamePadButtons::B) && !mGamePad->IsButtonHeldDown(GamePadButtons::B))
+		{
+			ExplodeBombs();
+		}
 	}
 
 	/************************************************************************/
@@ -316,6 +372,41 @@ namespace DirectXGame
 			{
 				mAnimationTimer -= mCurrentAnimation->AnimationLength;
 				++mCurrentAnimation->CurrentSpriteIndex;
+			}
+		}
+	}
+	
+	/************************************************************************/
+	void Player::PlaceBomb()
+	{
+		if (mBombs.size() <= mPerks.BombUp)
+		{
+			for (auto bomb : mBombs)
+			{
+				XMUINT2 bombTile = GetTileFromPosition(bomb->Position());
+				XMUINT2 playerTile = GetTileFromPosition(mPosition);
+
+				if (bombTile.x == playerTile.x && bombTile.y == playerTile.y)
+				{
+					return;
+				}
+			}
+
+			auto bomb = make_shared<Bomb>(mDeviceResources, mCamera, *this);
+			mBombs.push_back(bomb);
+			LevelManager::GetInstance().AddBomb(bomb);
+		}
+	}
+
+	/************************************************************************/
+	void Player::ExplodeBombs()
+	{
+		if (mPerks.Remote)
+		{
+			vector<shared_ptr<Bomb>> vect = mBombs;
+			for (auto& bomb : vect)
+			{
+				bomb->Explode();
 			}
 		}
 	}

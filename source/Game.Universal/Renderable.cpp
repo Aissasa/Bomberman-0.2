@@ -24,7 +24,7 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	const DirectX::XMFLOAT2 & Renderable::Position() const
+	const XMFLOAT2& Renderable::Position() const
 	{
 		return mPosition;
 	}
@@ -152,7 +152,7 @@ namespace DirectXGame
 	}
 
 	/************************************************************************/
-	void Renderable::Render(const StepTimer & timer)
+	void Renderable::Render(const StepTimer& timer)
 	{
 		UNREFERENCED_PARAMETER(timer);
 
@@ -202,7 +202,7 @@ namespace DirectXGame
 	{
 		XMFLOAT4X4 textureTransform;
 		XMMATRIX textureTransformMatrix = XMMatrixScaling(sprite.UVScalingFactor.x, sprite.UVScalingFactor.y, 0) * 
-			XMMatrixTranslation(sprite.UVScalingFactor.x * sprite.X, sprite.UVScalingFactor.y * sprite.Y, 0); // todo maybe change this
+			XMMatrixTranslation(sprite.UVScalingFactor.x * sprite.X, sprite.UVScalingFactor.y * sprite.Y, sprite.SortingLayer); // todo maybe try adding sorting layer here
 		XMStoreFloat4x4(&textureTransform, textureTransformMatrix);
 		
 		return textureTransform;

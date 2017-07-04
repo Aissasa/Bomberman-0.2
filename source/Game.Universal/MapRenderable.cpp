@@ -26,19 +26,23 @@ namespace DirectXGame
 	void MapRenderable::Update(const StepTimer& timer)
 	{
 		Renderable::Update(timer);
-
-		// urgent do stuff here
 	}
 
 	/************************************************************************/
 	void MapRenderable::Render(const StepTimer& timer)
 	{
+		// Loading is asynchronous. Only draw geometry after it's loaded.
+		if (!mLoadingComplete)
+		{
+			return;
+		}
+
 		Renderable::Render(timer);
 		RenderBasicMap();
 	}
 
 	/************************************************************************/
-	Map MapRenderable::GetMap() const
+	const Map& MapRenderable::GetMap() const
 	{
 		return mMap;
 	}

@@ -3,6 +3,8 @@
 #include "MapRenderable.h"
 #include "Player.h"
 #include "CollisionManager.h"
+#include "LevelManager.h"
+#include "Bomb.h"
 
 using namespace DX;
 using namespace std;
@@ -21,6 +23,8 @@ namespace DirectXGame
 	{
 		// Register to be notified if the Device is lost or recreated
 		mDeviceResources->RegisterDeviceNotify(this);
+
+		LevelManager::GetInstance().SetGameMain(*this);
 
 		auto camera = make_shared<OrthographicCamera>(mDeviceResources);
 		mComponents.push_back(camera);
@@ -44,7 +48,7 @@ namespace DirectXGame
 		auto map = make_shared<MapRenderable>(mDeviceResources, camera);
 		mComponents.push_back(map);
 
-		auto player = make_shared<Player>(mDeviceResources, camera, mKeyboard, map->GetMap().PlayerSpawnTile);
+		auto player = make_shared<Player>(mDeviceResources, camera, mKeyboard, mGamePad, map->GetMap());
 		CollisionManager::GetInstance().SetMap(map);
 
 		mComponents.push_back(player);
@@ -87,6 +91,9 @@ namespace DirectXGame
 				CoreApplication::Exit();
 			}
 		});
+
+		RemoveComponents();
+		AddNewComponents();
 	}
 
 	// Renders the current frame according to the current application state.
@@ -125,6 +132,16 @@ namespace DirectXGame
 		return true;
 	}
 
+	void GameMain::AddComponent(const shared_ptr<DX::GameComponent>& component)
+	{
+		mComponentsToAdd.push_back(component);
+	}
+
+	void GameMain::RemoveComponent(const DX::GameComponent& component)
+	{
+		mComponentsToDelete.push_back(&component);
+	}
+
 	// Notifies renderers that device resources need to be released.
 	void GameMain::OnDeviceLost()
 	{
@@ -148,5 +165,41 @@ namespace DirectXGame
 		}
 
 		CreateWindowSizeDependentResources();
+	}
+
+	void GameMain::AddNewComponents()
+	{
+		if (mComponentsToAdd.size() == 0)
+		{
+			return;
+		}
+
+		for (auto& componentToAdd : mComponentsToAdd)
+		{
+			mComponents.push_back(componentToAdd);
+		}
+		mComponentsToAdd.clear();
+	}
+
+	void GameMain::RemoveComponents()
+	{
+		if (mComponentsToDelete.size() == 0)
+		{
+			return;
+		}
+
+		for (auto& componentToRemove : mComponentsToDelete)
+		{
+			for (auto it = mComponents.begin(); it != mComponents.end(); ++it)
+			{
+				if ((*it).get() == componentToRemove)
+				{
+					mComponents.erase(it);
+					break;
+				}
+			}
+		}
+
+		mComponentsToDelete.clear();
 	}
 }

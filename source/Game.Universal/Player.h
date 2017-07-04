@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Renderable.h"
-#include "KeyboardComponent.h"
-#include <vector>
 #include "CollisionManager.h"
+
+namespace DX
+{
+	class KeyboardComponent;
+	class GamePadComponent;
+}
 
 namespace DirectXGame
 {
@@ -70,17 +74,24 @@ namespace DirectXGame
 		bool PassSoftBlocks;
 	};
 
+	class Bomb;
+
 	/** Class representing an animated renderable player.
 	*/
 	class Player final : public Renderable
 	{
 	public:
 
-		Player(const std::shared_ptr<DX::DeviceResources>& deviceResources, const std::shared_ptr<DX::Camera>& camera, const std::shared_ptr<DX::KeyboardComponent>& keyboard,
-			   DirectX::XMUINT2& startTile, const std::string& jsonPath = kJSONFilePath, const std::wstring& textureMapPath = kTextureMapPath);
-
+		Player(const std::shared_ptr<DX::DeviceResources>& deviceResources, const std::shared_ptr<DX::Camera>& camera, const std::shared_ptr<DX::KeyboardComponent>& keyboard, 
+			   const std::shared_ptr<DX::GamePadComponent>& gamePad, const Map& map, const std::string& jsonPath = kJSONFilePath, 
+			   const std::wstring& textureMapPath = kTextureMapPath);
+		
 		virtual void Update(const DX::StepTimer& timer) override;
 		virtual void Render(const DX::StepTimer& timer) override;
+
+		const Perks& GetPerks() const;
+		bool RemoveBomb(const Bomb& bomb);
+		const Map& GetMap() const;
 
 	protected:
 
@@ -97,8 +108,14 @@ namespace DirectXGame
 		void HandleMovingStateAnimationUpdate(const DX::StepTimer& timer);
 		void HandleDyingStateAnimationUpdate(const DX::StepTimer& timer);
 
+		void PlaceBomb();
+		void ExplodeBombs();
+
 		Perks mPerks;
 		std::shared_ptr<DX::KeyboardComponent> mKeyBoard;
+		std::shared_ptr<DX::GamePadComponent> mGamePad;
+		const Map& mMap;
+		std::vector<std::shared_ptr<Bomb>> mBombs;
 		PlayerState mCurrentPlayerState;
 
 		// movement

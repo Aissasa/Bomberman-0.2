@@ -91,7 +91,7 @@
   },
   "Animations": [
     {
-      "Name": "Bomb_Idle",
+      "Name": "BombTicking",
       "Sprites": [
         0,
         1,

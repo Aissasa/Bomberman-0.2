@@ -88,6 +88,12 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Collision</Filter>
     </ClCompile>
+    <ClCompile Include="LevelManager.cpp">
+      <Filter>Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>Renderables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -125,6 +131,12 @@
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
       <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelManager.h">
+      <Filter>Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Renderables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
