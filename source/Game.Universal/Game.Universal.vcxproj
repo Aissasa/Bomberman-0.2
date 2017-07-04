@@ -151,10 +151,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -178,10 +176,8 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -205,10 +201,8 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -232,10 +226,8 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -259,10 +251,8 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -286,10 +276,8 @@ if not %rce%==1 exit %rce% else exit 0</Command>
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>robocopy "$(ProjectDir)Assets" "$(OutDir)AppX/Assets" /MIR /R:0 /W:0
-
-set rce=%errorlevel%
-if not %rce%==1 exit %rce% else exit 0</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -349,12 +337,54 @@ if not %rce%==1 exit %rce% else exit 0</Command>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Assets\JSONS\Barom.json" />
-    <None Include="Assets\JSONS\BasicMap.json" />
-    <None Include="Assets\JSONS\Bomb.json" />
-    <None Include="Assets\JSONS\BombAE.json" />
-    <None Include="Assets\JSONS\MC.json" />
-    <None Include="Assets\JSONS\Props.json" />
+    <None Include="Assets\JSONS\Barom.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\JSONS\BasicMap.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\JSONS\Bomb.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\JSONS\BombAE.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\JSONS\MC.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\JSONS\Props.json">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
     <None Include="Game.Universal_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
